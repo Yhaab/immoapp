@@ -29,6 +29,8 @@ The project is currently in its initial development phase. Its applications and 
 - **Linting:** ESLint 10
 - **Formatting:** Prettier 3
 - **API testing:** Vitest 4
+- **Commit validation:** Commitlint and Husky
+- **Continuous integration:** GitHub Actions
 
 TypeScript 5 is currently used by the Next.js applications, while TypeScript 6 is used by the NestJS API.
 
@@ -260,6 +262,138 @@ The root `pnpm test` command currently runs the API unit-test task. It does not 
 
 Do not claim that code builds or tests pass unless those checks were actually executed successfully.
 
+## Turborepo Conventions
+
+Turborepo configuration is maintained in `turbo.json`.
+
+- Use `pnpm dev` for the development tasks.
+- Use `pnpm build` for workspace builds.
+- Use `pnpm lint` for linting.
+- Use `pnpm check-types` for TypeScript checks.
+- Use `pnpm test` for available unit tests.
+
+Respect the existing task dependency relationships and caching rules.
+
+Development tasks are persistent and are not cached.
+
+Build tasks may cache their declared outputs, including `.next` and `dist` artifacts.
+
+Do not disable task caching without justification.
+
+Do not add unnecessary build scripts to configuration-only workspace packages.
+
+When introducing new compiled shared packages:
+
+- Define the necessary package scripts.
+- Declare appropriate build outputs.
+- Ensure workspace dependencies are correct.
+- Verify task ordering and cache behavior.
+
+Remote Turborepo caching is not currently configured.
+
+## Conventional Commits
+
+**All commit messages must follow the Conventional Commits format with a mandatory scope.**
+
+Required format:
+
+```text
+type(scope): description
+```
+
+Examples:
+
+```text
+feat(web): add property search filters
+feat(admin): implement property dashboard
+feat(api): add lease endpoints
+fix(api): handle invalid lease dates
+refactor(api): extract validation logic
+test(api): add lease service unit tests
+docs(repo): update project documentation
+chore(repo): update development dependencies
+ci(github): configure quality checks
+```
+
+### Commit Rules
+
+- Always provide a valid Conventional Commit type.
+- Always include a scope.
+- Write scopes in lowercase kebab-case.
+- Always write commit messages in English.
+- Use lowercase descriptions without trailing periods.
+- Keep the commit header within 100 characters.
+- Use concise, descriptive messages.
+- Describe the actual change rather than the development activity.
+
+Use scopes that identify the affected application, package, or repository concern.
+
+Common scopes include:
+
+- `web`
+- `admin`
+- `api`
+- `repo`
+- `eslint-config`
+- `typescript-config`
+- `github`
+
+These are conventions, not a hardcoded allowlist. Additional scopes may be used when justified.
+
+### Commit Validation
+
+Commitlint configuration is maintained in `.commitlintrc`.
+
+Husky invokes Commitlint through `.husky/commit-msg`.
+
+The root `package.json` provides the Husky `prepare` script.
+
+Commitlint validates the commit structure, but it cannot reliably verify that the description is written in English. Agents must enforce that language convention when composing commit messages.
+
+Do not bypass the commit message hook.
+
+Do not create commits without an explicit request from the user.
+
+When suggesting a commit message, always use the required `type(scope): description` format.
+
+## GitHub Actions and Continuous Integration
+
+Continuous integration is configured in:
+
+```text
+.github/workflows/ci.yml
+```
+
+The workflow is named `CI`.
+
+It runs on pushes and pull requests targeting `dev` and `main`.
+
+Its `Quality checks` job performs:
+
+- Commit message validation.
+- Pull request title validation for pull request events.
+- Prettier formatting checks.
+- ESLint checks.
+- TypeScript type checks.
+- Unit tests.
+- API end-to-end tests.
+- Application builds.
+
+### CI Conventions
+
+- Keep the CI workflow aligned with the repository's actual scripts.
+- Prefer reusing root pnpm commands instead of duplicating tooling logic.
+- Preserve the declared Node.js and pnpm requirements.
+- Install dependencies using the committed lockfile.
+- Keep GitHub Actions permissions minimal.
+- Do not add secrets or external services unless required.
+- Do not bypass failing CI checks.
+- Do not claim CI passed without checking its actual result.
+
+When adding tests, packages, or build requirements, update the CI workflow if necessary.
+
+Remote Turborepo caching is not currently configured.
+
 ## Development Environment
 
 Shared Visual Studio Code configuration is maintained in `.vscode/`.
@@ -299,35 +433,35 @@ Do not add speculative implementation details to project documentation.
 The repository uses `dev` as its default development branch and maintains a separate `main` branch.
 
 - Respect the current branch and existing Git workflow.
-- Do not commit, push, merge, rebase, or deploy unless explicitly requested.
+- Do not commit, push, merge, rebase, or deploy changes unless explicitly requested.
 - Do not modify `main` without explicit instructions.
 - Do not overwrite or discard unrelated work.
 - Avoid unrelated formatting or refactoring changes.
 - Review the affected files before proposing a commit.
-- Prefer focused, descriptive commit messages.
+- Always use the project's Conventional Commits format.
 
-Use conventional commit prefixes when suggesting commit messages, such as:
+When branch protection requires pull requests, create a short-lived branch and propose changes through a pull request targeting the appropriate branch.
 
-- `feat:`
-- `fix:`
-- `refactor:`
-- `chore:`
-- `docs:`
-- `test:`
+Do not assume branch protection rules are enabled solely because CI is configured.
 
-Do not assume that a commit or push has occurred unless the corresponding operation was actually performed.
+A successful GitHub Actions workflow does not, by itself, prevent direct pushes or enforce pull request requirements.
+
+Do not bypass configured branch protection rules or required status checks.
+
+Do not assume that a commit, push, merge, or deployment has occurred unless the corresponding operation was actually performed.
 
 ## Agent Workflow
 
 When working on the repository:
 
-1. **Inspect first.** Read the relevant files, scripts, dependencies, and existing conventions.
+1. **Inspect first.** Read relevant files, scripts, dependencies, and existing conventions.
 2. **Understand scope.** Identify the smallest coherent change that satisfies the request.
 3. **Reuse existing architecture.** Prefer established packages and configurations.
 4. **Implement incrementally.** Avoid unrelated changes and premature abstractions.
-5. **Validate.** Run the relevant checks available in the environment.
-6. **Review.** Examine the resulting changes for correctness and unintended effects.
-7. **Report.** Summarize what changed, what was verified, and any remaining limitations.
+5. **Validate locally.** Run relevant checks available in the environment.
+6. **Review the changes.** Examine modifications for correctness and unintended effects.
+7. **Check CI when applicable.** Verify GitHub Actions results after pushing or opening a pull request.
+8. **Report.** Summarize changes, validation results, and any remaining limitations.
 
 Do not perform substantial refactoring without explicit approval.
 
@@ -337,7 +471,7 @@ When a user asks for a proposal or review rather than direct implementation, pro
 
 ## Current Project Boundaries
 
-The repository currently contains initialized applications, shared tooling packages, and initial API tests.
+The repository currently contains initialized applications, shared tooling packages, initial API tests, Conventional Commits validation, and GitHub Actions CI.
 
 Do not assume the existence of:
 
@@ -349,7 +483,7 @@ Do not assume the existence of:
 - Implemented real estate listings or search.
 - Implemented ImmoPass functionality.
 - Frontend automated tests.
-- CI/CD workflows.
+- Remote Turborepo caching.
 - Production deployment.
 
 Introduce these capabilities progressively and only as part of an explicitly defined development task.
