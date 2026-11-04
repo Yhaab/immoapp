@@ -1,78 +1,182 @@
 # ImmoApp
 
-ImmoApp is an all-in-one real estate SaaS platform designed for individuals and real estate professionals.
+ImmoApp is an all-in-one real estate SaaS platform for individuals and real estate professionals.
 
-The project aims to bring together three core features:
+The project aims to centralize property-related activities in a single platform, covering three main areas:
 
-- **Real Estate Listings**: Publish, search, and browse property listings.
-- **Property Management**: Manage properties, rentals, leases, rent indexation, and documents.
-- **ImmoPass**: Track a property's lifecycle, including maintenance, renovations, repairs, and other important events.
+- **Real Estate Listings:** Publish, search, and browse property listings.
+- **Property Management:** Manage properties, rentals, leases, rent indexation, and associated documents.
+- **ImmoPass:** Maintain a structured history of a property's lifecycle, including maintenance, renovations, repairs, works, and other significant events.
 
-The initial target market is Belgium, with potential international expansion in the future.
+The initial target market is **Belgium**, with potential international expansion in the future.
 
-## Tech Stack
+> ImmoApp is a working project name and may change. Internal monorepo packages use the generic `@repo/*` namespace to remain independent of the product's commercial identity.
 
-ImmoApp is built as a TypeScript monorepo using the following technologies:
+## Project Status
 
-| Category        | Technology               |
-| --------------- | ------------------------ |
-| Package Manager | pnpm Workspaces          |
-| Monorepo        | Turborepo                |
-| Frontend        | Next.js 16, React 19     |
-| Backend         | NestJS 12                |
-| Language        | TypeScript (strict mode) |
-| Styling         | Tailwind CSS 4           |
-| Linting         | ESLint                   |
-| Formatting      | Prettier                 |
-| Testing         | Vitest (API)             |
+ImmoApp is currently in its **initial development and architecture phase**.
 
-**Planned technologies:**
+The monorepo, its three applications, and the shared development configurations have been initialized.
 
-- **UI Components**: shadcn/ui
-- **ORM**: Prisma
-- **Database**: PostgreSQL
+The current codebase includes:
 
-> The project is in its initial development phase. Technologies and shared packages will be integrated progressively as needed.
+- Two Next.js applications with placeholder pages.
+- A NestJS API with an initial application structure.
+- Initial API unit and end-to-end tests.
+- Shared ESLint and TypeScript configuration packages.
+- Centralized dependency versions through pnpm Catalogs.
+- Shared formatting conventions with Prettier.
+- Shared Visual Studio Code settings and extension recommendations.
+- Monorepo task orchestration with Turborepo.
 
-## Project Structure
+Core business features, authentication, database integration, and production deployment are not implemented yet.
+
+Development is incremental, with an emphasis on correctness, maintainability, security, and long-term sustainability.
+
+## Technology Stack
+
+ImmoApp uses a TypeScript monorepo organized with pnpm Workspaces and Turborepo.
+
+| Category                | Technology                       |
+| ----------------------- | -------------------------------- |
+| Package manager         | pnpm 12                          |
+| Monorepo                | Turborepo 2                      |
+| Frontend                | Next.js 16 and React 19          |
+| Backend                 | NestJS 12                        |
+| Language                | TypeScript (strict mode)         |
+| Styling                 | Tailwind CSS 4                   |
+| Linting                 | ESLint 10                        |
+| Formatting              | Prettier 3                       |
+| API testing             | Vitest 4                         |
+| Development environment | Visual Studio Code configuration |
+
+TypeScript versions currently differ between applications:
+
+- **Web and Admin:** TypeScript 5.
+- **API:** TypeScript 6.
+
+These versions are managed through named pnpm Catalogs.
+
+### Planned Technologies
+
+The following technologies are planned but are **not yet integrated**:
+
+- **UI components:** shadcn/ui
+- **Database:** PostgreSQL
+- **ORM:** Prisma
+
+Additional infrastructure, testing, and deployment tooling will be introduced when needed.
+
+## Repository Structure
 
 ```text
 immoapp/
+├── .vscode/
+│   ├── extensions.json
+│   └── settings.json
+│
 ├── apps/
-│   ├── web/                   # Public website (Next.js)
-│   ├── admin/                 # Management platform (Next.js)
-│   └── api/                   # Backend API (NestJS)
-├── .gitattributes             # Git line-ending configuration
-├── .gitignore                 # Git ignore rules
-├── AGENTS.md                  # AI agent development instructions
-├── package.json              # Root scripts and dependencies
-├── pnpm-lock.yaml             # Dependency lockfile
-├── pnpm-workspace.yaml        # Workspace configuration
-├── README.md                  # Project documentation
-└── turbo.json                 # Turborepo task configuration
+│   ├── web/
+│   │   ├── src/app/
+│   │   ├── eslint.config.mjs
+│   │   ├── next.config.ts
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   │
+│   ├── admin/
+│   │   ├── src/app/
+│   │   ├── eslint.config.mjs
+│   │   ├── next.config.ts
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   │
+│   └── api/
+│       ├── src/
+│       ├── test/
+│       ├── eslint.config.mjs
+│       ├── nest-cli.json
+│       ├── package.json
+│       ├── tsconfig.json
+│       ├── tsconfig.build.json
+│       ├── vitest.config.ts
+│       └── vitest.config.e2e.ts
+│
+├── packages/
+│   ├── eslint-config/
+│   │   ├── base.js
+│   │   ├── next.js
+│   │   ├── nest.js
+│   │   └── package.json
+│   │
+│   └── typescript-config/
+│       ├── base.json
+│       ├── nextjs.json
+│       ├── nestjs.json
+│       └── package.json
+│
+├── .gitattributes
+├── .gitignore
+├── .prettierignore
+├── .prettierrc
+├── AGENTS.md
+├── package.json
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
+├── README.md
+└── turbo.json
 ```
-
-Shared packages will be added under `packages/` when required.
 
 ### Applications
 
-| Application  | Description                       | Local Port |
+| Application  | Description                       | Local port |
 | ------------ | --------------------------------- | ---------- |
-| `apps/web`   | Public real estate website        | 3000       |
-| `apps/admin` | SaaS property management platform | 3001       |
+| `apps/web`   | Public-facing real estate website | 3000       |
+| `apps/admin` | Property management platform      | 3001       |
 | `apps/api`   | Backend API and business logic    | 3002       |
 
-Each application maintains its own dependencies, configuration, and framework-specific scripts.
+The frontend applications use Next.js App Router.
+
+The API uses NestJS with Node.js ESM module resolution.
+
+Applications retain their framework-specific configurations, while reusable development configurations are maintained in shared packages.
+
+### Shared Packages
+
+#### `@repo/eslint-config`
+
+Provides reusable ESLint configurations for Next.js and NestJS.
+
+- `base.js`: Shared TypeScript linting rules.
+- `next.js`: Next.js configuration, including Core Web Vitals and TypeScript rules.
+- `nest.js`: NestJS configuration, including type-aware TypeScript linting.
+
+The package also integrates `eslint-config-prettier` to prevent conflicting formatting rules.
+
+#### `@repo/typescript-config`
+
+Provides reusable TypeScript configurations.
+
+- `base.json`: Common compiler options, including strict mode.
+- `nextjs.json`: Configuration for Next.js applications.
+- `nestjs.json`: Configuration for the NestJS API.
+
+Applications extend these configurations while maintaining their own application-specific settings.
+
+Both shared packages are private workspace packages, independent of the product name.
 
 ## Prerequisites
 
-- **Node.js** >= 24
-- **pnpm** 12.16.1
-- **Git**
+The following tools are required:
+
+- **Node.js:** Version 24 or newer.
+- **pnpm:** Version 12.16.1.
+- **Git:** For repository management.
+
+The required Node.js version and package manager version are declared in the root `package.json`.
 
 ## Getting Started
 
-Clone the repository:
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Yhaab/immoapp.git
@@ -80,27 +184,39 @@ cd immoapp
 git switch dev
 ```
 
-Install dependencies from the monorepo root:
+### 2. Install Dependencies
+
+Run the installation command from the repository root:
 
 ```bash
 pnpm install
 ```
 
-Start all applications in development mode:
+pnpm installs dependencies for the entire workspace and links internal `@repo/*` packages.
+
+### 3. Start the Development Environment
+
+Start all development applications:
 
 ```bash
 pnpm dev
 ```
 
-Once started, the applications are accessible at:
+Turborepo executes the development scripts of the applications.
 
-- **Web**: http://localhost:3000
-- **Admin**: http://localhost:3001
-- **API**: http://localhost:3002
+Once started, the applications are available at:
+
+| Application | URL                   |
+| ----------- | --------------------- |
+| Web         | http://localhost:3000 |
+| Admin       | http://localhost:3001 |
+| API         | http://localhost:3002 |
+
+The current applications display initial placeholder content.
 
 ### Running Applications Individually
 
-To start a specific application:
+Each application can also be started independently:
 
 ```bash
 pnpm --filter web dev
@@ -108,25 +224,31 @@ pnpm --filter admin dev
 pnpm --filter api dev
 ```
 
+These commands can be run from the monorepo root.
+
 ## Development Commands
 
-The following commands are available from the monorepo root and are orchestrated through Turborepo where applicable.
+The root `package.json` exposes the following commands:
 
-| Command             | Description                                |
-| ------------------- | ------------------------------------------ |
-| `pnpm dev`          | Start all applications in development mode |
-| `pnpm build`        | Build applications and packages            |
-| `pnpm lint`         | Run ESLint checks                          |
-| `pnpm check-types`  | Run TypeScript type checks                 |
-| `pnpm test`         | Run available automated tests              |
-| `pnpm format`       | Format TypeScript, TSX, and Markdown files |
-| `pnpm format:check` | Check formatting without modifying files   |
+| Command             | Description                                    |
+| ------------------- | ---------------------------------------------- |
+| `pnpm dev`          | Start applications in development mode         |
+| `pnpm build`        | Build workspaces with build scripts            |
+| `pnpm lint`         | Run ESLint checks across applicable workspaces |
+| `pnpm check-types`  | Run TypeScript type checks                     |
+| `pnpm test`         | Run available unit tests                       |
+| `pnpm format`       | Format supported project files with Prettier   |
+| `pnpm format:check` | Check formatting without modifying files       |
+
+Turborepo orchestrates development, build, lint, type-checking, and testing tasks.
+
+Prettier runs directly from the repository root.
 
 ### API Testing
 
-The NestJS application uses Vitest for unit and end-to-end tests.
+The NestJS API uses Vitest.
 
-Run unit tests:
+Run API unit tests:
 
 ```bash
 pnpm --filter api test
@@ -138,45 +260,144 @@ Run unit tests in watch mode:
 pnpm --filter api test:watch
 ```
 
-Run tests with coverage:
+Run unit tests with coverage:
 
 ```bash
 pnpm --filter api test:cov
 ```
 
-Run end-to-end tests:
+Run API end-to-end tests:
 
 ```bash
 pnpm --filter api test:e2e
 ```
 
-> Frontend testing is not configured yet. The root `pnpm test` command currently executes the API unit tests, not its end-to-end tests.
+> Frontend tests are not configured yet. The root `pnpm test` command currently runs the API unit-test task through Turborepo. API end-to-end tests must be executed separately.
 
-## Development Conventions
+## Shared Development Configuration
 
-The project follows these principles:
+### pnpm Workspaces and Catalogs
 
-- Use TypeScript with strict mode enabled.
-- Prioritize maintainability, security, and code quality.
-- Keep applications and packages modular and independent.
-- Manage dependencies with pnpm Workspaces.
-- Orchestrate workspace tasks with Turborepo.
-- Use ESLint for static code analysis and Prettier for formatting.
-- Add automated tests as functionality is implemented.
-- Avoid unnecessary dependencies and premature abstractions.
+The monorepo is configured in `pnpm-workspace.yaml`.
 
-AI-assisted development instructions are maintained in [`AGENTS.md`](./AGENTS.md).
+Internal packages use the `workspace:*` protocol:
 
-## Project Status
+```json
+{
+  "@repo/eslint-config": "workspace:*",
+  "@repo/typescript-config": "workspace:*"
+}
+```
 
-ImmoApp is currently in its **initial setup and architecture phase**.
+Shared external dependency versions are centralized through pnpm Catalogs.
 
-The monorepo has been initialized, and the following applications have been scaffolded:
+Examples include:
 
-- **Web**: Next.js public website.
-- **Admin**: Next.js management platform.
-- **API**: NestJS backend with initial unit and end-to-end test configurations.
+```json
+{
+  "next": "catalog:",
+  "react": "catalog:",
+  "eslint": "catalog:"
+}
+```
 
-The applications currently contain minimal starter implementations. Business features, authentication, database integration, and shared packages have not yet been implemented.
+Named Catalogs are currently used for TypeScript:
 
-The project is being developed progressively, with an emphasis on long-term maintainability, modularity, and scalability.
+- `catalog:typescript5` for Next.js applications.
+- `catalog:typescript6` for the NestJS API.
+
+Dependency versions should be managed through the relevant catalog when a shared version already exists.
+
+### ESLint
+
+ESLint configurations are centralized in `@repo/eslint-config`.
+
+Applications import the configuration appropriate to their framework:
+
+- `web` and `admin` use the shared Next.js configuration.
+- `api` uses the shared NestJS configuration.
+
+The shared rules prohibit explicit `any` types.
+
+The NestJS configuration also enables type-aware linting and checks for unhandled promises.
+
+### TypeScript
+
+TypeScript strict mode is enabled through `@repo/typescript-config`.
+
+Framework-specific options remain separate:
+
+- Next.js uses bundler module resolution.
+- NestJS uses NodeNext module resolution, with ESM and decorator support.
+
+Application-specific paths, generated types, and compilation settings remain in the relevant application directories.
+
+### Prettier
+
+The root `.prettierrc` defines formatting conventions for the entire repository:
+
+- Semicolons enabled.
+- Double quotes.
+- Trailing commas where supported.
+- A print width of 80 characters.
+- Two-space indentation.
+- LF line endings.
+
+Prettier and ESLint are independent tools.
+
+ESLint handles code-quality checks, while Prettier handles formatting. `eslint-config-prettier` disables conflicting ESLint formatting rules.
+
+The root `.prettierignore` excludes `pnpm-lock.yaml` from Prettier formatting.
+
+### Visual Studio Code
+
+The `.vscode` directory provides shared editor settings and recommended extensions.
+
+Recommended extensions:
+
+- ESLint
+- Prettier
+- Tailwind CSS IntelliSense
+
+The editor settings enable formatting on save, configure ESLint working directories for the three applications, and enforce the shared formatting configuration.
+
+These files are versioned to provide consistent development conventions.
+
+## Development Principles
+
+ImmoApp follows these principles:
+
+- Prioritize correctness, maintainability, security, and long-term sustainability.
+- Use TypeScript strict mode.
+- Avoid explicit `any` types and unnecessary type assertions.
+- Keep business logic modular and responsibilities clearly separated.
+- Respect existing application and shared-package boundaries.
+- Prefer incremental changes over premature abstractions.
+- Avoid unnecessary dependencies and configuration packages.
+- Use shared configurations for genuinely common conventions.
+- Add or update tests when introducing or changing behavior.
+- Keep code, comments, commit messages, and technical documentation in English.
+
+Detailed instructions for AI-assisted development are maintained in [AGENTS.md](./AGENTS.md).
+
+## Planned Development
+
+Future work includes:
+
+- Defining the domain model and database architecture.
+- Introducing PostgreSQL and Prisma.
+- Building authentication and authorization.
+- Implementing property and rental management features.
+- Developing real estate listing and search functionality.
+- Implementing ImmoPass property lifecycle tracking.
+- Introducing shared UI components when needed.
+- Expanding automated test coverage.
+- Establishing automated CI checks and deployment infrastructure.
+
+These items describe the intended direction of the project and should not be considered implemented functionality.
+
+## License
+
+No license has been declared for this repository.
+
+Unless a license is added, no open-source usage permissions are granted by default.

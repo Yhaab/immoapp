@@ -1,55 +1,357 @@
 # ImmoApp — Agent Instructions
 
-## Project
+## Project Overview
 
-ImmoApp is an all-in-one real estate SaaS platform for individuals and real estate professionals.
+ImmoApp is an all-in-one real estate SaaS platform intended for individuals and real estate professionals.
 
 The initial target market is Belgium, with potential international expansion in the future.
 
+The platform is intended to cover three main domains:
+
+- **Real Estate Listings:** Property publication, browsing, and search.
+- **Property Management:** Properties, rentals, leases, rent indexation, and related documents.
+- **ImmoPass:** Property lifecycle documentation, including maintenance, renovations, repairs, and significant events.
+
+The project is currently in its initial development phase. Its applications and development tooling have been initialized, but the main business features have not yet been implemented.
+
+**ImmoApp is a temporary project name.** Internal workspace packages must use the generic `@repo/*` namespace, independently of future product branding.
+
 ## Technology Stack
 
-- **Monorepo:** pnpm Workspaces and Turborepo
-- **Frontend:** Next.js
-- **Backend:** NestJS
-- **Language:** TypeScript (strict mode)
-- **UI:** Tailwind CSS and shadcn/ui
-- **ORM:** Prisma
-- **Database:** PostgreSQL
+### Currently Integrated
 
-Applications and packages will be introduced progressively. Do not assume that planned technologies are already installed.
+- **Package manager:** pnpm 12
+- **Monorepo orchestration:** Turborepo 2
+- **Frontend:** Next.js 16, React 19
+- **Backend:** NestJS 12
+- **Language:** TypeScript with strict mode
+- **Styling:** Tailwind CSS 4
+- **Linting:** ESLint 10
+- **Formatting:** Prettier 3
+- **API testing:** Vitest 4
+
+TypeScript 5 is currently used by the Next.js applications, while TypeScript 6 is used by the NestJS API.
+
+### Planned, Not Yet Integrated
+
+- shadcn/ui
+- PostgreSQL
+- Prisma
+- Authentication and authorization
+- Production deployment infrastructure
+
+Do not assume that planned technologies, features, or infrastructure are already available.
+
+Do not introduce them unless they are relevant to the requested task.
+
+## Repository Organization
+
+The monorepo follows this structure:
+
+```text
+apps/
+  web/                 Public Next.js application
+  admin/               Management Next.js application
+  api/                 NestJS backend
+
+packages/
+  eslint-config/       Shared ESLint configurations
+  typescript-config/   Shared TypeScript configurations
+```
+
+### Application Responsibilities
+
+- `apps/web`: Public-facing website, property listings, and search.
+- `apps/admin`: Property management and professional workflows.
+- `apps/api`: Backend API, domain logic, and future data access.
+
+Keep application-specific code and configuration within the corresponding application.
+
+Do not introduce direct dependencies between applications.
+
+Use shared workspace packages when code genuinely needs to be reused.
+
+### Shared Package Naming
+
+All internal workspace packages must use the `@repo/*` namespace.
+
+Examples:
+
+- `@repo/eslint-config`
+- `@repo/typescript-config`
+- `@repo/ui` (future, if needed)
+
+Do not rename internal packages to `@immoapp/*` or another product-specific namespace without explicit instructions.
+
+Use the `workspace:*` protocol for internal workspace dependencies.
 
 ## Development Principles
 
-- Prioritize correctness, maintainability, security, and long-term sustainability.
-- Keep implementations simple, modular, and explicit.
-- Follow existing project conventions and configurations.
-- Use TypeScript strict mode for all TypeScript projects.
-- Avoid `any` and unsafe type assertions unless explicitly justified.
-- Avoid unnecessary dependencies, abstractions, and premature optimizations.
-- Do not introduce new frameworks, tools, or architectural patterns without justification.
-- Keep changes focused on the requested scope.
+- Prioritize correctness, security, maintainability, and long-term sustainability.
+- Prefer simple, explicit, and readable implementations.
+- Keep changes incremental and focused on the requested task.
+- Follow the existing architecture before introducing new patterns.
+- Avoid unnecessary dependencies, abstractions, and configuration files.
+- Avoid duplication when a shared abstraction has a clear and recurring purpose.
+- Do not introduce premature generalization or optimization.
+- Preserve separation of concerns between frontend, backend, and shared packages.
+- Do not introduce a new framework, library, or architectural pattern without justification.
+- Do not refactor unrelated code as part of a focused task.
 
-## Monorepo Conventions
+Prefer solutions that are understandable and maintainable over solutions that are merely concise.
 
-- Use pnpm as the package manager.
-- Use Turborepo to orchestrate workspace tasks.
-- Place applications in `apps/`.
-- Place shared packages in `packages/`.
-- Keep dependencies and configurations scoped to their respective workspaces whenever appropriate.
+## TypeScript Conventions
 
-## Quality and Verification
+- Use TypeScript strict mode.
+- Avoid explicit `any` types.
+- Avoid unsafe type assertions and unnecessary non-null assertions.
+- Prefer well-defined types and explicit contracts.
+- Handle nullable and optional values deliberately.
+- Do not disable TypeScript compiler checks to suppress errors.
+- Use the shared TypeScript configurations provided by `@repo/typescript-config`.
+- Preserve framework-specific compiler options.
 
-- Write readable, maintainable, and appropriately tested code.
-- Add or update tests when implementing or modifying behavior.
-- Run relevant checks when available.
-- Do not bypass TypeScript errors, linting rules, or failing tests to make changes pass.
-- Report validation results and any checks that could not be executed.
+The shared TypeScript configuration files are:
+
+- `@repo/typescript-config/base.json`
+- `@repo/typescript-config/nextjs.json`
+- `@repo/typescript-config/nestjs.json`
+
+The Next.js applications use bundler module resolution.
+
+The NestJS API uses NodeNext module resolution and ESM. Follow the existing `.js` extension convention for relative runtime imports in the API's TypeScript source files.
+
+Do not change TypeScript major versions without verifying compatibility with the affected frameworks and tooling.
+
+## ESLint and Formatting
+
+### ESLint
+
+Shared ESLint configurations are maintained in `@repo/eslint-config`.
+
+- `web` and `admin` use the Next.js configuration.
+- `api` uses the NestJS configuration.
+- Common TypeScript linting rules are maintained centrally.
+
+The shared configurations integrate `eslint-config-prettier`.
+
+Do not duplicate shared linting rules inside application-level configuration files unless an application-specific exception is justified.
+
+Do not disable linting rules solely to make checks pass.
+
+### Prettier
+
+Prettier is configured at the repository root using `.prettierrc`.
+
+Project formatting conventions include:
+
+- Semicolons.
+- Double quotes.
+- Trailing commas where supported.
+- Two-space indentation.
+- A print width of 80 characters.
+- LF line endings.
+
+Use Prettier for formatting and ESLint for code-quality checks.
+
+Avoid introducing conflicting formatting rules into ESLint.
+
+Do not manually edit the generated `pnpm-lock.yaml` to change dependency resolutions.
+
+## Dependency Management
+
+Use pnpm for all package management operations.
+
+Do not use npm, Yarn, or another package manager for dependency installation or lockfile management.
+
+Dependencies are managed through `pnpm-workspace.yaml`.
+
+### pnpm Catalogs
+
+Use the default catalog for dependencies already centralized there, including:
+
+- Next.js
+- React
+- React DOM
+- Tailwind CSS
+- ESLint
+- Shared React type definitions
+
+Use the existing named catalogs for TypeScript:
+
+- `catalog:typescript5`
+- `catalog:typescript6`
+
+Use `workspace:*` for internal `@repo/*` packages.
+
+Before changing a dependency version:
+
+1. Check whether the dependency is already managed by a catalog.
+2. Check compatibility with all affected applications and packages.
+3. Update the relevant catalog when appropriate.
+4. Update the lockfile using pnpm.
+5. Run relevant validation commands.
+
+Do not add a dependency to a catalog merely because it exists. Catalogs should reflect a useful shared version policy.
+
+Do not upgrade unrelated dependencies during a focused change.
+
+## Framework-Specific Configuration
+
+Keep framework-specific configuration files within their applications unless a shared configuration provides a clear benefit.
+
+Examples include:
+
+- `apps/web/next.config.ts`
+- `apps/admin/next.config.ts`
+- `apps/api/nest-cli.json`
+- `apps/api/tsconfig.build.json`
+- `apps/api/vitest.config.ts`
+- `apps/api/vitest.config.e2e.ts`
+
+Do not create additional configuration packages without a demonstrated need.
+
+Use the existing shared ESLint and TypeScript packages instead of duplicating their configurations.
+
+## Testing and Quality Assurance
+
+Write readable, maintainable, and appropriately tested code.
+
+Add or update automated tests when implementing or modifying behavior.
+
+The API currently uses Vitest for unit and end-to-end tests.
+
+Frontend testing is not configured yet.
+
+### Root Commands
+
+Run commands from the repository root unless a task requires otherwise.
+
+```bash
+pnpm lint
+pnpm check-types
+pnpm test
+pnpm build
+pnpm format:check
+```
+
+Use `pnpm format` to apply Prettier formatting when needed.
+
+### API-Specific Testing
+
+```bash
+pnpm --filter api test
+pnpm --filter api test:watch
+pnpm --filter api test:cov
+pnpm --filter api test:e2e
+```
+
+The root `pnpm test` command currently runs the API unit-test task. It does not automatically execute the API end-to-end test configuration.
+
+### Validation Rules
+
+- Run checks relevant to the files and workspaces changed.
+- Prefer targeted checks during development.
+- Run broader checks when changes affect shared configurations or multiple applications.
+- Do not ignore or bypass failing tests, linting errors, or TypeScript errors.
+- Investigate failures before proposing workarounds.
+- Report which checks were executed and their results.
+- Explicitly state when a check could not be executed.
+
+Do not claim that code builds or tests pass unless those checks were actually executed successfully.
+
+## Development Environment
+
+Shared Visual Studio Code configuration is maintained in `.vscode/`.
+
+The repository provides:
+
+- Formatting on save with Prettier.
+- ESLint integration.
+- ESLint working directories for `web`, `admin`, and `api`.
+- Recommended ESLint, Prettier, and Tailwind CSS extensions.
+
+Respect the existing editor configuration when modifying development tooling.
+
+Do not introduce personal editor preferences into the shared repository configuration without a project-level reason.
+
+## Documentation and Language
+
+Write the following in English:
+
+- Source code identifiers.
+- Code comments.
+- Commit messages.
+- Technical documentation.
+- README and AGENTS files.
+- Configuration documentation.
+
+Keep documentation accurate and consistent with the actual repository.
+
+Distinguish clearly between implemented features and planned functionality.
+
+Update relevant documentation when introducing meaningful architectural changes, new workspace packages, or new development commands.
+
+Do not add speculative implementation details to project documentation.
+
+## Git and Change Management
+
+The repository uses `dev` as its default development branch and maintains a separate `main` branch.
+
+- Respect the current branch and existing Git workflow.
+- Do not commit, push, merge, rebase, or deploy unless explicitly requested.
+- Do not modify `main` without explicit instructions.
+- Do not overwrite or discard unrelated work.
+- Avoid unrelated formatting or refactoring changes.
+- Review the affected files before proposing a commit.
+- Prefer focused, descriptive commit messages.
+
+Use conventional commit prefixes when suggesting commit messages, such as:
+
+- `feat:`
+- `fix:`
+- `refactor:`
+- `chore:`
+- `docs:`
+- `test:`
+
+Do not assume that a commit or push has occurred unless the corresponding operation was actually performed.
 
 ## Agent Workflow
 
-- Inspect relevant existing files before making changes.
-- Respect the established architecture and project conventions.
-- Do not modify unrelated files.
-- Do not perform major refactoring without explicit approval.
-- Do not commit, push, or deploy changes unless explicitly requested.
-- Clearly communicate important assumptions, decisions, and unresolved issues.
+When working on the repository:
+
+1. **Inspect first.** Read the relevant files, scripts, dependencies, and existing conventions.
+2. **Understand scope.** Identify the smallest coherent change that satisfies the request.
+3. **Reuse existing architecture.** Prefer established packages and configurations.
+4. **Implement incrementally.** Avoid unrelated changes and premature abstractions.
+5. **Validate.** Run the relevant checks available in the environment.
+6. **Review.** Examine the resulting changes for correctness and unintended effects.
+7. **Report.** Summarize what changed, what was verified, and any remaining limitations.
+
+Do not perform substantial refactoring without explicit approval.
+
+Do not introduce external services, new infrastructure, or major dependencies without justification.
+
+When a user asks for a proposal or review rather than direct implementation, provide the recommended changes without modifying the repository.
+
+## Current Project Boundaries
+
+The repository currently contains initialized applications, shared tooling packages, and initial API tests.
+
+Do not assume the existence of:
+
+- A database or Prisma schema.
+- Authentication or authorization.
+- A completed design system.
+- Shared business-domain packages.
+- Implemented property management workflows.
+- Implemented real estate listings or search.
+- Implemented ImmoPass functionality.
+- Frontend automated tests.
+- CI/CD workflows.
+- Production deployment.
+
+Introduce these capabilities progressively and only as part of an explicitly defined development task.
+
+The long-term objective is a professional, maintainable real estate platform, not a collection of loosely connected features or unnecessary abstractions.
