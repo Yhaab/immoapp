@@ -1,3 +1,28 @@
 packages:
   - "apps/*"
   - "packages/*"
+
+catalog:
+  # Next.js
+  next: 16.4.4
+  eslint-config-next: 16.4.4
+  react: 19.3.0
+  react-dom: 19.3.0
+
+  # Tailwind CSS
+  "@tailwindcss/turbopack": ^4
+  tailwindcss: ^4
+
+  # Type definitions
+  "@types/react": ^19
+  "@types/react-dom": ^19
+
+  # ESLint
+  eslint: ^10.14.0
+
+catalogs:
+  typescript5:
+    typescript: ^5
+
+  typescript6:
+    typescript: ^6.0.2
