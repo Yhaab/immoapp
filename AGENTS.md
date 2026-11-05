@@ -30,8 +30,8 @@ Belgium. Internal packages use `@repo/*`.
 - Do not commit, push, rebase, deploy, or perform substantial refactoring without
   explicit authorization. An implementation request authorizing a branch, commits,
   push, and PR covers those actions within its stated scope.
-- Work on a dedicated branch from the approved base (normally `dev`); open a PR
-  to the appropriate branch. Do not directly modify `dev` or `main`.
+- Never develop directly on `dev` or `main`; use a dedicated task branch and PR.
+  Follow [branch naming and lifecycle rules](docs/contributing/workflow.md#branch-lifecycle).
 - Never bypass hooks, GitHub protections, required checks, or failing CI.
 - Never merge without the owner's explicit authorization. Successful CI or an
   approval recommendation is not merge authorization.

@@ -48,6 +48,63 @@ GitHub settings; the CI workflow alone does not establish enforcement. Preserve
 configured protections and do not assume a push, commit, merge, or deployment
 occurred unless its operation was actually performed.
 
+## Branch lifecycle
+
+### Task branches and naming
+
+Never develop or push implementation or documentation changes directly on
+`dev` or `main`, regardless of whether branch protection is enabled. Start each
+new task from the approved, up-to-date base (normally `dev`) and create a
+short-lived task branch. Apply review corrections to the existing PR branch
+rather than creating a separate Issue or PR for the same work.
+
+Use descriptive English branch names with a type prefix and a short lowercase
+kebab-case description. Include an Issue reference when useful, for example
+`feat/42-property-search`.
+
+- `feat/<short-description>` for new behavior.
+- `fix/<short-description>` for bug fixes.
+- `docs/<short-description>` for documentation.
+- `refactor/<short-description>` for refactoring.
+- `test/<short-description>` for tests.
+- `chore/<short-description>` for maintenance.
+- `ci/<short-description>` for CI changes.
+
+These prefixes are conventions, not an inflexible allowlist; justify exceptional
+names. Keep changes on the task branch and open a PR to the approved target.
+No branch naming or lifecycle rule grants permission to merge.
+
+### Remote branch deletion after merge
+
+Delete a remote task branch only after its PR has been successfully merged and
+no other active work depends on it. Never delete a branch while its PR is open.
+
+Prefer GitHub's **Settings → General → Pull Requests → Automatically delete head
+branches** option for automatic remote cleanup after merge. This is a repository
+setting, not a version-controlled configuration; documenting the preference does
+not enable it or establish that it is enabled.
+
+Confirm that the remote branch was actually removed after merge. If automatic
+deletion is disabled or blocked by rules, arrange safe remote deletion after
+merge without bypassing protections. Preserve any branch needed by other active
+work and resolve that dependency before deletion.
+
+### Manual, periodic local maintenance
+
+Deleting a remote branch does not delete local branches. The owner handles local
+cleanup manually and periodically when useful. It is optional maintenance, not
+a Codex responsibility, a prerequisite for starting a task, or a completion
+requirement after a merge. No separate Issue is required for this maintenance.
+
+If the owner performs local maintenance, preserve uncommitted or unmerged work,
+switch off the branch, and use `git branch -d` only for branches confirmed merged
+and no longer needed. If deletion is refused, verify the PR merge status and
+actual changes, including squash merges; never use `git branch -D` automatically.
+Disposable workspaces do not need local cleanup.
+
+This distinction follows the
+[owner's clarification in PR #1](https://github.com/Yhaab/immoapp/pull/1#pullrequestreview-5786875363).
+
 ## Issue checklist
 
 Every implementation Issue must provide enough information to avoid guessing
@@ -127,7 +184,7 @@ When authorized, a typical documentation branch starts with:
 
 ```bash
 git switch dev
-git pull origin dev
+git pull --ff-only origin dev
 git switch -c docs/update-project-documentation
 ```
 
